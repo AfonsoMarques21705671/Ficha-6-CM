@@ -1,11 +1,9 @@
 package com.example.acalculator
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import net.objecthunter.exp4j.ExpressionBuilder
@@ -14,28 +12,26 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
-    private var history = ""
+
     private val VISOR_KEY = "visor"
 
     private val pattern = "hh:mm:ss"
     private val simpleDateFormat = SimpleDateFormat(pattern)
     private var date = simpleDateFormat.format(Date())
-    private val symbols = listOf<Char>('+', '-', '*','/')
+    private val symbols = listOf('+', '-', '*','/')
+    private val history = mutableListOf(Operation("1+1","2"))
+//    private val historyAdapter = HistoryAdapter(this, R.layout.item_expression, history)
+    private lateinit var historyAdapter: HistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(TAG,"O metodo onCreate foi invocado")
         setContentView(R.layout.activity_main)
 
-        list_historic?.adapter = HistoryAdapter (this,
-            android.R.layout.simple_list_item_1, arrayListOf("1+1=2" , "2+3=5"))
+//        list_historic?.adapter = HistoryAdapter(this, R.layout.item_expression, history)
+        historyAdapter = HistoryAdapter(this, R.layout.item_expression, history)
+        list_historic?.adapter = historyAdapter
 
-//        button_exp.setOnClickListener {
-//            Log.i(TAG,"Click no botão ^")
-//            if(text_visor.text[text_visor.text.length -1] !in symbol && !text_visor.text.endsWith("^")) {
-//                text_visor.append("^")
-//            }
-//        }
 
         button_0.setOnClickListener { onClickSymbol("0") }
 
@@ -67,7 +63,10 @@ class MainActivity : AppCompatActivity() {
 
         button_dot.setOnClickListener { onClickDot() }
 
-        button_hist?.setOnClickListener { onClickHist() }
+        button_hist?.setOnClickListener {
+            startActivity(Intent(this, Main2Activity::class.java))
+            finish()
+        }
 
         button_clearAll.setOnClickListener { onClickClear("C") }
 
@@ -103,7 +102,6 @@ class MainActivity : AppCompatActivity() {
     private fun onClickEquals () {
 
         var text = text_visor.text.toString()
-        history = text_visor.text.toString()
         Log.i(TAG,"Click no botão =")
         if(text_visor.text[text_visor.text.length -1] in symbols){
             text = text_visor.text.substring(0, text_visor.text.length - 1 )
@@ -111,8 +109,12 @@ class MainActivity : AppCompatActivity() {
         if(text_visor.text.contains(Regex("-? *?/?^?.?"))) {
             val expression = ExpressionBuilder(text).build()
             text_visor.text = expression.evaluate().toString()
+            history.add(Operation(text, text_visor.text.toString()))
+//            list_historic?.adapter = HistoryAdapter(this, R.layout.item_expression, history)
+            historyAdapter.notifyDataSetChanged()
+            Log.i(TAG, "Operation is  ${text_visor.text}")
         }
-        Log.i(TAG, "O resultado da expressão é ${text_visor.text}")
+        Log.i(TAG, "O resultado da expressão é ${Operation(text, text_visor.text.toString()).toString()}")
 
         date = simpleDateFormat.format(Date())
         Toast.makeText(this, "Calculando resultado ${date}", Toast.LENGTH_SHORT).show()
@@ -153,11 +155,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun onClickHist() {
-        Log.i(TAG,"Click no botão Hist.")
-        text_visor.text = history
-
-        date = simpleDateFormat.format(Date())
-        Toast.makeText(this, "Ultimo calculo ${date}", Toast.LENGTH_SHORT).show()
-    }
+//    private fun onClickHist() {
+//        Log.i(TAG,"Click no botão Hist.")
+//        text_visor.text = history
+//
+//        date = simpleDateFormat.format(Date())
+//        Toast.makeText(this, "Ultimo calculo ${date}", Toast.LENGTH_SHORT).show()
+//    }
 }
