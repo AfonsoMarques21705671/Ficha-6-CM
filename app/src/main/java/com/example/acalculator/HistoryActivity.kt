@@ -18,14 +18,16 @@ class HistoryActivity : AppCompatActivity() {
         list_historic?.layoutManager = LinearLayoutManager(this)
         list_historic?.adapter = HistoryAdapter(this, R.layout.item_expression, operations)
 
+        NavigationManager.goToHistoryFragment(supportFragmentManager)
+
 //        list_historic.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
 //            Toast.makeText(this, "Expressão " + operations.get(id.toInt()).expressao, Toast.LENGTH_SHORT).show()
 //        }
 
-        FAB.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
+//        FAB.setOnClickListener {
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+//        }
 
     }
 }
