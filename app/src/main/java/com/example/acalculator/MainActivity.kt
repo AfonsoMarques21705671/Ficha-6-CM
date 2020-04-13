@@ -19,7 +19,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         setupDrawerMenu()
-        NavigationManager.goToCalculatorFragment(supportFragmentManager)
+        if (!screenRotated(savedInstanceState)) {
+            NavigationManager.goToCalculatorFragment(supportFragmentManager)
+        }
         val user = intent.getParcelableExtra<User>("EXTRA_UTILIZADOR")
         var view = nav_drawer.getHeaderView(0)
         view.title.text = user.name
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        list_historic?.adapter = HistoryAdapter(this, R.layout.item_expression, history)
 //        historyAdapter = HistoryAdapter(this, R.layout.item_expression, history)
 //        list_historic?.adapter = historyAdapter
+    }
+
+    private fun screenRotated(savedIntanceState: Bundle?): Boolean {
+        return savedIntanceState != null
     }
 
     private fun setupDrawerMenu () {

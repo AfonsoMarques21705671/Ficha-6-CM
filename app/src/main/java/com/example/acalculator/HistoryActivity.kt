@@ -15,8 +15,8 @@ class HistoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
         val operations = intent.getParcelableArrayListExtra<Operation>(EXTRA_HISTORY)
-        list_historic?.layoutManager = LinearLayoutManager(this)
-        list_historic?.adapter = HistoryAdapter(this, R.layout.item_expression, operations)
+        list_historic.layoutManager = LinearLayoutManager(this)
+        list_historic.adapter = HistoryAdapter(this, R.layout.item_expression, operations)
 
         NavigationManager.goToHistoryFragment(supportFragmentManager)
 
