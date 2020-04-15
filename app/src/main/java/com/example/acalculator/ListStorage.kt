@@ -20,10 +20,10 @@ class ListStorage private constructor(){
         }
     }
     suspend fun insert(operation: Operation) {
-        withContext(Dispatchers.IO) {
-            Thread.sleep(30000)
+//        withContext(Dispatchers.IO) {
+//            Thread.sleep(30000)
             storage.add(operation)
-        }
+//        }
     }
     fun insertUser(user: User) {
         users.add(user)
@@ -35,5 +35,9 @@ class ListStorage private constructor(){
 
     fun getDataUsers() : List<User> {
         return users
+    }
+
+    fun deleteStorage(index: Int) {
+        storage.removeAt(index)
     }
 }

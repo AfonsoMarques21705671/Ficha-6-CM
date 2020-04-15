@@ -3,6 +3,7 @@ package com.example.acalculator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.acalculator.MVVM.CalculatorFragment
+import com.example.acalculator.MVVM_History.HistoryFragment
 
 abstract class NavigationManager {
 
@@ -19,7 +20,9 @@ abstract class NavigationManager {
         }
 
         fun goToHistoryFragment(fm: FragmentManager) {
-            placeFragment(fm, HistoryFragment())
+            placeFragment(fm,
+                HistoryFragment()
+            )
         }
     }
 }

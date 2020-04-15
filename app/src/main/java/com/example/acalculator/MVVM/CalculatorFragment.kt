@@ -1,8 +1,8 @@
 package com.example.acalculator.MVVM
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,30 +12,30 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.ButterKnife
 import butterknife.OnClick
 import butterknife.Optional
-import com.example.acalculator.*
+import com.example.acalculator.HistoryAdapter
+import com.example.acalculator.MainActivity
+import com.example.acalculator.Operation
+import com.example.acalculator.R
 import kotlinx.android.synthetic.main.activity_history.list_historic
 import kotlinx.android.synthetic.main.fragment_calculator.*
-import kotlinx.android.synthetic.main.fragment_calculator.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
-class CalculatorFragment : Fragment(), OnDisplayChanged{
+class CalculatorFragment() : Fragment(), OnDisplayChanged, Parcelable {
     private val TAG = MainActivity::class.java.simpleName
 
-    private val history = mutableListOf(Operation("1+1", "2"))
+    private var history = mutableListOf(Operation("1+1", "2"),Operation("7+3", "10"))
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var viewModel: CalculatorViewModel
+
+    constructor(parcel: Parcel) : this() {
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_calculator, container, false)
         viewModel = ViewModelProviders.of(this).get(CalculatorViewModel::class.java)
 
         ButterKnife.bind(this, view)
-
-        list_historic?.layoutManager = LinearLayoutManager(context)
-        list_historic?.adapter = HistoryAdapter(context!!, R.layout.item_expression, history)
-
-        return view
+            return view
     }
 
     @Optional 
@@ -83,13 +83,15 @@ class CalculatorFragment : Fragment(), OnDisplayChanged{
         viewModel.onclickClear(view.tag.toString())
     }
 
-    @Optional
-    @OnClick(R.id.button_hist)
-    fun onClickHistory(view: View) {
-
-    }
+//    @Optional
+//    @OnClick(R.id.button_hist)
+//    fun onClickHistory(view: View) {
+//
+//    }
 
     override fun onStart() {
+        list_historic?.layoutManager = LinearLayoutManager(context)
+        list_historic?.adapter = HistoryAdapter(context!!, R.layout.item_expression, history)
         viewModel.registerListener(this)
         super.onStart()
     }
@@ -98,9 +100,32 @@ class CalculatorFragment : Fragment(), OnDisplayChanged{
         value?.let { text_visor.text = it }
     }
 
+    override fun onHistoryChanged(values: MutableList<Operation>) {
+        values?.let { history = it }
+    }
+
+
     override fun onDestroy() {
         viewModel.unregisterListener()
         super.onDestroy()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CalculatorFragment> {
+        override fun createFromParcel(parcel: Parcel): CalculatorFragment {
+            return CalculatorFragment(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CalculatorFragment?> {
+            return arrayOfNulls(size)
+        }
     }
 
 }

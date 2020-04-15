@@ -1,6 +1,8 @@
 package com.example.acalculator.MVVM
 
-interface OnDisplayChanged {
-    fun onDisplayChanged(value: String?)
+import com.example.acalculator.MVVM_History.OnHistoryChanged
+import com.example.acalculator.Operation
 
+interface OnDisplayChanged : OnHistoryChanged {
+    fun onDisplayChanged(value: String?)
 }
